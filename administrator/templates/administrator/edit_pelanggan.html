@@ -1,0 +1,27 @@
+{% extends 'administrator/base_admin.html' %}
+
+{% block title %}Edit Pelanggan{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+        <form method="post">
+        {% csrf_token %}
+        <label>Username</label>
+        <input type="text" name="username" value="{{ pelanggan.username }}" required class="form-control mb-3">
+        <label>Email</label>
+        <input type="email" name="email" value="{{ pelanggan.email }}" class="form-control mb-3">
+        <label>Nama Depan</label>
+        <input type="text" name="first_name" value="{{ pelanggan.first_name }}" class="form-control mb-3">
+        <label>Nama Belakang</label>
+        <input type="text" name="last_name" value="{{ pelanggan.last_name }}" class="form-control mb-3">
+        <label>NIK</label>
+        <input type="text" name="nik" value="{{ pelanggan.nik|default:'' }}" class="form-control mb-3">
+        <label>No Telepon</label>
+        <input type="text" name="no_telepon" value="{{ pelanggan.no_telepon|default:'' }}" class="form-control mb-3">
+        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+        <a href="{% url 'data_pelanggan' %}" class="btn btn-secondary">Batal</a>
+    </form>
+    </div>
+</div>
+{% endblock %}

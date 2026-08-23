@@ -1,0 +1,78 @@
+{% extends 'administrator/base_admin.html' %}
+
+{% block title %}Data Mobil{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+        <h2>Daftar Mobil</h2>
+
+<a href="{% url 'tambah_mobil' %}" class="btn btn-primary">
+    + Tambah Mobil
+</a>
+
+<div class="table-responsive"><table class="table table-bordered table-striped mt-3 align-middle">
+
+<tr>
+    <th>No</th>
+    <th>Foto</th>
+    <th>Nama Mobil</th>
+    <th>Merk</th>
+    <th>Nomor Polisi</th>
+    <th>Harga/Hari</th>
+    <th>Harga/Minggu</th>
+    <th>Harga/Bulan</th>
+    <th>Status</th>
+    <th>Aksi</th>
+</tr>
+
+{% for mobil in mobils %}
+
+<tr>
+    <td>{{ forloop.counter }}</td>
+    <td>
+        {% if mobil.foto %}
+            <img src="{{ mobil.foto.url }}" alt="{{ mobil.nama_mobil }}" width="70" style="border-radius:5px; object-fit:cover;">
+        {% else %}
+            <span style="color:#aaa;">-</span>
+        {% endif %}
+    </td>
+    <td>{{ mobil.nama_mobil }}</td>
+    <td>{{ mobil.merk }}</td>
+    <td>{{ mobil.nomor_polisi }}</td>
+    <td>Rp {{ mobil.harga_harian }}</td>
+    <td>Rp {{ mobil.harga_mingguan }}</td>
+    <td>Rp {{ mobil.harga_bulanan }}</td>
+
+    <td>
+        {% if mobil.tersedia %}
+            ✅ Tersedia
+        {% else %}
+            ❌ Disewa
+        {% endif %}
+    </td>
+
+    <td>
+        <a href="{% url 'edit_mobil' mobil.id %}" class="btn btn-sm btn-warning text-dark">✏ Edit</a>
+        <form method="post" action="{% url 'hapus_mobil' mobil.id %}" style="display:inline" onsubmit="return confirm('Yakin ingin menghapus mobil ini?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-danger">🗑 Hapus</button>
+        </form>
+    </td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+    <td colspan="10">Belum ada data mobil.</td>
+</tr>
+
+{% endfor %}
+
+</table></div>
+
+<br>
+    </div>
+</div>
+{% endblock %}

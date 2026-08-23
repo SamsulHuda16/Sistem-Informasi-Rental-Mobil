@@ -1,0 +1,67 @@
+{% extends 'administrator/base_admin.html' %}
+
+{% block title %}Pengembalian Mobil{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+        <h3>Data Penyewaan</h3>
+
+<p><b>Pelanggan :</b> 
+{% if penyewaan.nama_tamu %}
+    {{ penyewaan.nama_tamu }} (Tamu)
+{% elif penyewaan.pelanggan and penyewaan.pelanggan.username != '__guest__' %}
+    {{ penyewaan.pelanggan.username }}
+{% else %}
+    Tamu
+{% endif %}
+</p>
+<p><b>Mobil :</b> {{ penyewaan.mobil.nama_mobil }} ({{ penyewaan.mobil.nomor_polisi }})</p>
+<p><b>Jadwal Sewa :</b> {{ penyewaan.tanggal_sewa }} s/d {{ penyewaan.tanggal_kembali }}</p>
+
+{% if estimasi_denda > 0 %}
+<div class="alert-info">
+    ⚠️ <b>Peringatan Keterlambatan:</b> Pengembalian melewati jadwal ({{ penyewaan.tanggal_kembali }}). Estimasi denda otomatis disarankan: <b>Rp {{ estimasi_denda }}</b>.
+</div>
+{% endif %}
+
+<hr>
+
+<form method="POST">
+
+{% csrf_token %}
+
+<label>Tanggal Pengembalian</label>
+
+<input
+type="date"
+name="tanggal_pengembalian"
+value="{{ hari_ini }}"
+required class="form-control mb-3">
+
+<label>Kondisi Mobil</label>
+
+<textarea
+name="kondisi_mobil"
+rows="4"
+placeholder="Contoh: Baik, bersih, bensin penuh / Ada goresan di bumper"
+required></textarea>
+
+<label>Denda (Rp)</label>
+
+<input
+type="number"
+name="denda"
+value="{{ estimasi_denda }}"
+required class="form-control mb-3">
+
+<button type="submit" class="btn btn-primary">
+Simpan Pengembalian
+</button>
+
+<a href="{% url 'data_pengembalian' %}" style="margin-left: 15px; text-decoration: none; color: #2c5d73;">Batal</a>
+
+</form>
+    </div>
+</div>
+{% endblock %}

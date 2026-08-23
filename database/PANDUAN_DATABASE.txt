@@ -1,0 +1,19 @@
+PANDUAN DATABASE UNTUK PROJECT INI
+===================================
+
+Berbeda dengan project PHP konvensional yang membutuhkan file .sql untuk di-import ke phpMyAdmin, project Django ini menggunakan sistem MIGRATION.
+
+Langkah-langkah yang harus Anda lakukan:
+
+1. Buka XAMPP dan pastikan modul MySQL sudah berjalan (Start).
+2. Buka browser dan akses http://localhost/phpmyadmin
+3. Buat database baru dengan nama: rentalmobil
+4. Buka terminal/Command Prompt di folder project ini.
+5. Jalankan perintah ajaib ini:
+   
+   python manage.py migrate
+
+Perintah di atas akan secara OTOMATIS membaca semua struktur model di dalam project Anda dan membuatkan tabel-tabelnya (serta relasinya) di database MySQL yang baru Anda buat. Anda tidak perlu repot import file .sql!
+
+Jika Anda butuh membuat akun dummy (admin, dsb), jalankan:
+   python seed_dummy_users.py

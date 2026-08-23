@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+{% include "partials/messages_popup.html" %}
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pembayaran Penyewaan | Rental Mobil</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root { --primary:#1a3c5e; --accent:#f59e0b; --bg:#f0f4f8; }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter',Arial,sans-serif; background:var(--bg); }
+        .topbar { background:var(--primary); color:#fcd34d; padding:14px 5%; font-size:1.2rem; font-weight:800; display:flex; align-items:center; justify-content:space-between; }
+        .topbar a { color:rgba(255,255,255,.7); font-size:.85rem; font-weight:500; text-decoration:none; }
+        .topbar a:hover { color:#fff; }
+        .container { max-width:640px; margin:32px auto; background:white; padding:30px; border-radius:14px; box-shadow:0 4px 24px rgba(26,60,94,.1); }
+        h2 { color:var(--primary); font-size:1.2rem; font-weight:700; margin-bottom:18px; display:flex; align-items:center; gap:8px; }
+        .order-list { background:#f8fafc; border-radius:10px; padding:16px; margin-bottom:20px; border:1px solid #e2e8f0; }
+        .order-item { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #e2e8f0; font-size:.9rem; }
+        .order-item:last-child { border-bottom:none; }
+        .order-item .car-name { font-weight:600; color:var(--primary); }
+        .order-item .price { font-weight:700; color:#1e293b; }
+        .total-line { display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-top:2px solid var(--primary); margin-top:4px; }
+        .total-line .label { font-weight:700; color:var(--primary); font-size:1rem; }
+        .total-line .amount { font-weight:800; color:var(--primary); font-size:1.2rem; }
+        label { display:block; margin-top:16px; margin-bottom:6px; font-weight:600; color:#334155; font-size:.88rem; }
+        label:first-of-type { margin-top:0; }
+        select, input[type="file"] { width:100%; padding:10px 13px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:.9rem; font-family:'Inter',sans-serif; }
+        select:focus { outline:none; border-color:#2563a8; box-shadow:0 0 0 3px rgba(37,99,168,.1); }
+        .btn-submit { width:100%; padding:13px; background:var(--primary); color:white; border:none; border-radius:10px; font-size:1rem; font-weight:700; cursor:pointer; margin-top:22px; display:flex; align-items:center; justify-content:center; gap:8px; font-family:'Inter',sans-serif; transition:background .2s, transform .2s; }
+        .btn-submit:hover { background:#2563a8; transform:translateY(-2px); }
+        .back-link { display:inline-flex; align-items:center; gap:5px; color:var(--primary); text-decoration:none; font-size:.87rem; font-weight:500; margin-top:16px; }
+        .back-link:hover { text-decoration:underline; }
+        .note-box { background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:12px 14px; font-size:.83rem; color:#92400e; margin-top:12px; line-height:1.6; }
+        @media (max-width:768px) { .container{margin:15px;padding:20px} }
+    </style>
+</head>
+<body>
+<div class="topbar">
+    <span><i class="fas fa-credit-card"></i> Pembayaran Penyewaan</span>
+    <a href="{% url 'landing' %}"><i class="fas fa-home"></i> Beranda</a>
+</div>
+
+<div class="container">
+    <h2><i class="fas fa-receipt"></i> Ringkasan Pesanan</h2>
+
+    <div class="order-list">
+        {% for item in items %}
+        <div class="order-item">
+            <div>
+                <div class="car-name">{{ item.nama_mobil }}</div>
+                <div style="font-size:.8rem;color:#64748b;">{{ item.tanggal_sewa }} — {{ item.tanggal_kembali }} ({{ item.lama_sewa }} hari)</div>
+                {% if item.nama_tamu %}<div style="font-size:.8rem;color:#64748b;"><i class="fas fa-user"></i> {{ item.nama_tamu }}</div>{% endif %}
+            </div>
+            <div class="price">Rp {{ item.total_biaya }}</div>
+        </div>
+        {% endfor %}
+        <div class="total-line">
+            <span class="label">Total Pembayaran</span>
+            <span class="amount">Rp {{ total }}</span>
+        </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label for="metode_pembayaran">Metode Pembayaran</label>
+        <select name="metode_pembayaran" id="metode_pembayaran" required>
+            <option value="">-- Pilih Metode Pembayaran --</option>
+            <option value="Transfer Bank">Transfer Bank (BCA / Mandiri / BRI)</option>
+            <option value="E-Wallet">E-Wallet (GoPay / OVO / Dana)</option>
+            <option value="Tunai">Tunai (Bayar di Tempat)</option>
+        </select>
+
+        <label for="bukti_pembayaran">Upload Bukti Transfer / Pembayaran (Opsional)</label>
+        <input type="file" id="bukti_pembayaran" name="bukti_pembayaran" accept="image/*">
+
+        <div class="note-box">
+            <i class="fas fa-info-circle"></i>
+            Unggah foto/screenshot bukti bayar untuk mempercepat proses verifikasi oleh Admin.
+            Pemesanan akan berstatus <b>Menunggu Konfirmasi</b> hingga disetujui Admin.
+        </div>
+
+        <button type="submit" class="btn-submit" id="btn-konfirmasi">
+            <i class="fas fa-paper-plane"></i> Konfirmasi Pemesanan
+        </button>
+    </form>
+
+    <a href="{% url 'keranjang_penyewaan' %}" class="back-link">
+        <i class="fas fa-arrow-left"></i> Kembali ke Keranjang
+    </a>
+</div>
+</body>
+</html>

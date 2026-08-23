@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Penyewaan Berhasil</title>
+
+    <style>
+        body{
+            margin:0;
+            font-family:Arial, Helvetica, sans-serif;
+            background:#f4f6f9;
+        }
+
+        .header{
+            background:#2c5d73;
+            color:#ffd54f;
+            padding:20px 40px;
+            font-size:30px;
+            font-weight:bold;
+        }
+
+        .container{
+            width:700px;
+            margin:40px auto;
+            background:white;
+            padding:30px;
+            border-radius:8px;
+            box-shadow:0 2px 10px rgba(0,0,0,.15);
+        }
+
+        h2{
+            color:#2c5d73;
+            margin-top:0;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            margin-top:20px;
+        }
+
+        table td{
+            padding:12px;
+            border-bottom:1px solid #ddd;
+        }
+
+        .judul{
+            font-weight:bold;
+            width:220px;
+        }
+
+        .success{
+            background:#d4edda;
+            color:#155724;
+            padding:15px;
+            border-radius:5px;
+            margin-bottom:20px;
+        }
+
+        .btn{
+            display:inline-block;
+            margin-top:25px;
+            background:#2c5d73;
+            color:white;
+            text-decoration:none;
+            padding:12px 20px;
+            border-radius:5px;
+        }
+
+        .btn:hover{
+            background:#214656;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    Rental Mobil
+</div>
+
+<div class="container">
+
+    <div class="success">
+        ✅ Penyewaan berhasil diajukan.
+    </div>
+
+    <h2>Detail Penyewaan</h2>
+
+    <table>
+        <tr>
+            <td class="judul">Mobil</td>
+            <td>{{ mobil.nama_mobil }}</td>
+        </tr>
+
+        <tr>
+            <td class="judul">Lama Sewa</td>
+            <td>{{ lama_sewa }} Hari</td>
+        </tr>
+
+        <tr>
+            <td class="judul">Total Biaya</td>
+            <td>
+                <strong>
+                    Rp {{ total_biaya }}
+                </strong>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="judul">Status</td>
+            <td>
+                <span style="color:green;font-weight:bold;">
+                    Diajukan
+                </span>
+            </td>
+        </tr>
+    </table>
+
+    <a href="/pelanggan/mobil/" class="btn">
+        ← Kembali ke Daftar Mobil
+    </a>
+
+</div>
+
+</body>
+</html>

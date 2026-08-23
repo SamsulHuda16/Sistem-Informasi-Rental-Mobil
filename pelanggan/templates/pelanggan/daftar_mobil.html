@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Daftar Mobil Rental | Rental Mobil</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root { --primary:#1a3c5e; --accent:#f59e0b; --bg:#f0f4f8; }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter',Arial,sans-serif; background:var(--bg); }
+        .topbar { background:var(--primary); color:#fcd34d; padding:14px 5%; font-size:1.2rem; font-weight:800; display:flex; align-items:center; justify-content:space-between; }
+        .topbar a { color:rgba(255,255,255,.7); font-size:.85rem; font-weight:500; text-decoration:none; }
+        .topbar a:hover { color:#fff; }
+        .container { padding:30px 5%; }
+        .header-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:22px; }
+        h2 { color:var(--primary); font-size:1.3rem; font-weight:700; display:flex; align-items:center; gap:8px; }
+        table { width:100%; border-collapse:collapse; background:white; box-shadow:0 2px 12px rgba(26,60,94,.1); border-radius:10px; overflow:hidden; }
+        th { background:var(--primary); color:white; padding:14px 16px; text-align:left; font-size:.88rem; font-weight:600; }
+        td { padding:12px 16px; border-bottom:1px solid #e2e8f0; font-size:.88rem; }
+        tr:hover td { background:#f8fafc; }
+        .tersedia { color:#16a34a; font-weight:700; }
+        .tidak { color:#dc2626; font-weight:700; }
+        .btn { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:7px; font-size:.82rem; font-weight:600; text-decoration:none; transition:all .2s; }
+        .btn-gold { background:var(--accent); color:var(--primary); }
+        .btn-gold:hover { background:#fcd34d; transform:translateY(-1px); }
+        .btn-primary { background:var(--primary); color:white; }
+        .btn-primary:hover { background:#2563a8; transform:translateY(-1px); }
+        @media(max-width:768px) { .container{padding:15px} .header-row{flex-direction:column;gap:12px;align-items:flex-start} table{font-size:.8rem} }
+    </style>
+</head>
+<body>
+<div class="topbar">
+    <span><i class="fas fa-car"></i> Katalog Mobil</span>
+    <div style="display:flex;gap:14px;">
+        <a href="{% url 'keranjang_penyewaan' %}">
+            <i class="fas fa-shopping-cart"></i> Keranjang
+            {% if jumlah_keranjang > 0 %} ({{ jumlah_keranjang }}){% endif %}
+        </a>
+        <a href="{% url 'landing' %}"><i class="fas fa-home"></i> Beranda</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="header-row">
+        <h2><i class="fas fa-car"></i> Daftar Mobil Rental</h2>
+        <a href="{% url 'sewa_mobil' %}" class="btn btn-gold" id="btn-sewa-sekarang">
+            <i class="fas fa-key"></i> Sewa Sekarang
+        </a>
+    </div>
+
+    <table>
+        <tr>
+            <th>Foto</th>
+            <th>Nama Mobil</th>
+            <th>Merk</th>
+            <th>Plat Nomor</th>
+            <th>Harga / Hari</th>
+            <th>Harga / Minggu</th>
+            <th>Harga / Bulan</th>
+            <th>Status</th>
+            <th>Aksi</th>
+        </tr>
+
+        {% for mobil in mobils %}
+        <tr>
+            <td>
+                {% if mobil.foto %}
+                    <img src="{{ mobil.foto.url }}" alt="{{ mobil.nama_mobil }}" width="80" height="60" style="object-fit:cover;border-radius:6px;">
+                {% else %}
+                    <span style="color:#94a3b8;font-size:1.8rem;"><i class="fas fa-car"></i></span>
+                {% endif %}
+            </td>
+            <td><b>{{ mobil.nama_mobil }}</b></td>
+            <td>{{ mobil.merk }}</td>
+            <td>{{ mobil.nomor_polisi }}</td>
+            <td>Rp {{ mobil.harga_harian|floatformat:0 }}</td>
+            <td>Rp {{ mobil.harga_mingguan|floatformat:0 }}</td>
+            <td>Rp {{ mobil.harga_bulanan|floatformat:0 }}</td>
+            <td>
+                {% if mobil.tersedia %}
+                    <span class="tersedia"><i class="fas fa-check-circle"></i> Tersedia</span>
+                {% else %}
+                    <span class="tidak"><i class="fas fa-times-circle"></i> Disewa</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if mobil.tersedia %}
+                    <a href="{% url 'sewa_mobil' %}" class="btn btn-gold" id="sewa-{{ mobil.id }}">
+                        <i class="fas fa-key"></i> Sewa
+                    </a>
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="9" style="text-align:center;padding:40px;color:#94a3b8;">
+                <i class="fas fa-car" style="font-size:2rem;display:block;margin-bottom:10px;"></i>
+                Belum ada mobil yang tersedia.
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+</body>
+</html>

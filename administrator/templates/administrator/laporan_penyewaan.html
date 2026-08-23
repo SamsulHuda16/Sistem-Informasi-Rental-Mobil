@@ -1,0 +1,63 @@
+{% extends 'administrator/base_admin.html' %}
+
+{% block title %}Laporan Penyewaan Mobil{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+        <div style="display:flex; justify-content:space-between; align-items:center;" class="no-print">
+    <h2>Data Laporan Penyewaan</h2>
+    <div>
+        <button onclick="window.print()" class="btn btn-print">🖨️ Cetak / Download PDF</button>
+        
+    </div>
+</div>
+
+<div class="table-responsive"><table class="table table-bordered table-striped mt-3 align-middle">
+
+<thead>
+<tr>
+    <th>No</th>
+    <th>Pelanggan</th>
+    <th>Mobil</th>
+    <th>Tanggal Sewa</th>
+    <th>Tanggal Kembali</th>
+    <th>Lama</th>
+    <th>Total Biaya</th>
+    <th>Status</th>
+</tr>
+</thead>
+
+<tbody>
+{% for p in penyewaans %}
+
+<tr>
+    <td>{{ forloop.counter }}</td>
+    <td>
+        {% if p.nama_tamu %}{{ p.nama_tamu }} (Tamu)
+        {% elif p.pelanggan and p.pelanggan.username != '__guest__' %}{{ p.pelanggan.username }}
+        {% else %}Tamu{% endif %}
+    </td>
+    <td>{{ p.mobil.nama_mobil }}</td>
+    <td>{{ p.tanggal_sewa }}</td>
+    <td>{{ p.tanggal_kembali }}</td>
+    <td>{{ p.lama_sewa }} Hari</td>
+    <td>Rp {{ p.total_biaya }}</td>
+    <td>{{ p.get_status_display }}</td>
+</tr>
+
+{% empty %}
+
+<tr>
+    <td colspan="8">
+        Belum ada data penyewaan.
+    </td>
+</tr>
+
+{% endfor %}
+</tbody>
+
+</table></div>
+    </div>
+</div>
+{% endblock %}

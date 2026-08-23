@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Form Penyewaan Mobil | Rental Mobil</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a3c5e;
+            --primary-light: #2563a8;
+            --accent: #f59e0b;
+            --bg: #f0f4f8;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: var(--bg);
+        }
+
+        .topbar {
+            background: var(--primary);
+            color: #fcd34d;
+            padding: 14px 5%;
+            font-size: 1.2rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .topbar a { color: rgba(255,255,255,.7); font-size: .85rem; font-weight: 500; text-decoration: none; }
+        .topbar a:hover { color: #fff; }
+
+        .container {
+            max-width: 640px;
+            margin: 36px auto;
+            background: white;
+            padding: 34px;
+            border-radius: 14px;
+            box-shadow: 0 4px 24px rgba(26,60,94,.1);
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid var(--primary-light);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            color: #1e40af;
+            font-size: .87rem;
+            line-height: 1.6;
+        }
+
+        .form-section {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 18px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-section-title {
+            font-size: .78rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: .6px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #334155;
+            font-size: .88rem;
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 5px;
+        }
+
+        label:first-child { margin-top: 0; }
+
+        select, input[type="text"], input[type="date"], input[type="tel"], input[type="email"] {
+            width: 100%;
+            padding: 10px 13px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: .9rem;
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+            transition: border-color .2s;
+            background: white;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(37,99,168,.1);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background .2s, transform .2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-submit:hover { background: var(--primary-light); transform: translateY(-2px); }
+
+        .back-links {
+            display: flex;
+            gap: 12px;
+            margin-top: 18px;
+            flex-wrap: wrap;
+        }
+
+        .back-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: .87rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .back-link:hover { text-decoration: underline; }
+
+        @media (max-width: 768px) {
+            .container { margin: 15px; padding: 22px; }
+        }
+    </style>
+</head>
+<body>
+{% include "partials/messages_popup.html" %}
+
+<div class="topbar">
+    <span><i class="fas fa-car"></i> Rental Mobil</span>
+    <div style="display:flex; gap:14px;">
+        <a href="{% url 'keranjang_penyewaan' %}"><i class="fas fa-shopping-cart"></i> Keranjang
+            {% if jumlah_keranjang > 0 %} ({{ jumlah_keranjang }}){% endif %}
+        </a>
+        <a href="{% url 'landing' %}"><i class="fas fa-home"></i> Beranda</a>
+    </div>
+</div>
+
+<div class="container">
+    <h2><i class="fas fa-calendar-check"></i> Form Penyewaan Mobil</h2>
+
+    <div class="info-box">
+        <i class="fas fa-lightbulb"></i> <b>Info Tarif Hemat:</b>
+        Sistem otomatis mengaplikasikan paket bulanan (30 hari) atau mingguan (7 hari) jika durasi sewa memenuhi syarat!
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- Data Pemesan -->
+        <div class="form-section">
+            <div class="form-section-title"><i class="fas fa-user"></i> Data Pemesan</div>
+
+            <label for="nama_tamu">Nama Lengkap <span style="color:#ef4444;">*</span></label>
+            <input type="text" id="nama_tamu" name="nama_tamu" placeholder="Masukkan nama lengkap Anda" required>
+
+            <label for="nik_tamu">NIK (Nomor Induk Kependudukan) <span style="color:#ef4444;">*</span></label>
+            <input type="text" id="nik_tamu" name="nik_tamu" placeholder="Contoh: 3271234567890001" maxlength="16" required>
+
+            <label for="no_telepon_tamu">No. Telepon / WhatsApp</label>
+            <input type="tel" id="no_telepon_tamu" name="no_telepon_tamu" placeholder="Contoh: 0812-3456-7890">
+
+            <label for="email_tamu">Email (Opsional)</label>
+            <input type="email" id="email_tamu" name="email_tamu" placeholder="Contoh: nama@email.com">
+        </div>
+
+        <!-- Detail Sewa -->
+        <div class="form-section">
+            <div class="form-section-title"><i class="fas fa-car"></i> Detail Penyewaan</div>
+
+            <label for="mobil_select">Pilih Mobil <span style="color:#ef4444;">*</span></label>
+            <select name="mobil" id="mobil_select" required>
+                {% for mobil in mobils %}
+                    <option value="{{ mobil.id }}">
+                        {{ mobil.nama_mobil }} — Rp {{ mobil.harga_harian|floatformat:0 }}/hr | Rp {{ mobil.harga_mingguan|floatformat:0 }}/mg | Rp {{ mobil.harga_bulanan|floatformat:0 }}/bln
+                    </option>
+                {% endfor %}
+            </select>
+
+            <label for="tanggal_sewa">Tanggal Sewa <span style="color:#ef4444;">*</span></label>
+            <input type="date" id="tanggal_sewa" name="tanggal_sewa" min="{% now 'Y-m-d' %}" required>
+
+            <label for="tanggal_kembali">Tanggal Kembali <span style="color:#ef4444;">*</span></label>
+            <input type="date" id="tanggal_kembali" name="tanggal_kembali" min="{% now 'Y-m-d' %}" required>
+        </div>
+
+        <button type="submit" class="btn-submit" id="btn-tambah-keranjang">
+            <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+        </button>
+    </form>
+
+    <div class="back-links">
+        <a href="{% url 'keranjang_penyewaan' %}" class="back-link">
+            <i class="fas fa-shopping-cart"></i> Lihat Keranjang
+        </a>
+        <a href="{% url 'daftar_mobil' %}" class="back-link">
+            <i class="fas fa-list"></i> Daftar Mobil
+        </a>
+        <a href="{% url 'landing' %}" class="back-link">
+            <i class="fas fa-home"></i> Beranda
+        </a>
+    </div>
+</div>
+
+</body>
+</html>

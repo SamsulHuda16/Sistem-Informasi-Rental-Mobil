@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Riwayat Penyewaan | Rental Mobil</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root { --primary:#1a3c5e; --accent:#f59e0b; --bg:#f0f4f8; }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter',Arial,sans-serif; background:var(--bg); }
+        .topbar { background:var(--primary); color:#fcd34d; padding:14px 5%; font-size:1.2rem; font-weight:800; display:flex; align-items:center; justify-content:space-between; }
+        .topbar a { color:rgba(255,255,255,.7); font-size:.85rem; font-weight:500; text-decoration:none; }
+        .topbar a:hover { color:#fff; }
+        .container { width:92%; max-width:1000px; margin:30px auto; background:white; padding:26px; border-radius:14px; box-shadow:0 4px 24px rgba(26,60,94,.1); }
+        h2 { color:var(--primary); font-size:1.2rem; font-weight:700; margin-bottom:20px; display:flex; align-items:center; gap:8px; }
+        table { width:100%; border-collapse:collapse; }
+        th,td { padding:12px 14px; border-bottom:1px solid #e2e8f0; text-align:left; font-size:.88rem; }
+        th { background:var(--primary); color:#fff; font-weight:600; }
+        tr:hover td { background:#f8fafc; }
+        .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:.75rem; font-weight:600; }
+        .badge-diajukan { background:#fef3c7; color:#92400e; }
+        .badge-disetujui { background:#d1fae5; color:#065f46; }
+        .badge-ditolak { background:#fee2e2; color:#991b1b; }
+        .badge-selesai { background:#dbeafe; color:#1e40af; }
+        .empty-state { text-align:center; padding:50px 20px; color:#94a3b8; }
+        .empty-state i { font-size:3rem; margin-bottom:16px; display:block; }
+        .info-note { background:#eff6ff; border-left:4px solid #2563a8; padding:12px 16px; border-radius:8px; font-size:.84rem; color:#1e40af; margin-bottom:20px; }
+        .btn { display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:8px; font-size:.85rem; font-weight:600; text-decoration:none; transition:all .2s; }
+        .btn-primary { background:var(--primary); color:white; }
+        .btn-primary:hover { background:#2563a8; transform:translateY(-1px); }
+        @media(max-width:768px) { .container{width:auto;margin:15px;padding:16px;overflow-x:auto} table{min-width:650px} }
+    </style>
+</head>
+<body>
+<div class="topbar">
+    <span><i class="fas fa-history"></i> Riwayat Penyewaan</span>
+    <div style="display:flex;gap:14px;">
+        <a href="{% url 'sewa_mobil' %}"><i class="fas fa-plus"></i> Sewa Baru</a>
+        <a href="{% url 'landing' %}"><i class="fas fa-home"></i> Beranda</a>
+    </div>
+</div>
+
+<div class="container">
+    <h2><i class="fas fa-history"></i> Riwayat Penyewaan Sesi Ini</h2>
+
+    <div class="info-note">
+        <i class="fas fa-info-circle"></i>
+        Riwayat ini hanya menampilkan pesanan yang Anda buat pada sesi browser ini.
+        Untuk melacak pesanan Anda, hubungi kami langsung.
+    </div>
+
+    {% if penyewaans %}
+    <table>
+        <tr>
+            <th>Mobil</th>
+            <th>Pemesan</th>
+            <th>Tanggal Sewa</th>
+            <th>Tanggal Kembali</th>
+            <th>Lama</th>
+            <th>Total Biaya</th>
+            <th>Status</th>
+        </tr>
+        {% for p in penyewaans %}
+        <tr>
+            <td><b>{{ p.mobil.nama_mobil }}</b></td>
+            <td>
+                {{ p.nama_tamu|default:"-" }}
+                {% if p.no_telepon_tamu %}<br><small style="color:#64748b;">{{ p.no_telepon_tamu }}</small>{% endif %}
+            </td>
+            <td>{{ p.tanggal_sewa }}</td>
+            <td>{{ p.tanggal_kembali }}</td>
+            <td>{{ p.lama_sewa }} Hari</td>
+            <td><b>Rp {{ p.total_biaya }}</b></td>
+            <td>
+                <span class="badge badge-{{ p.status }}">{{ p.get_status_display }}</span>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-history"></i>
+        <p>Belum ada riwayat penyewaan pada sesi ini.</p>
+        <br>
+        <a href="{% url 'sewa_mobil' %}" class="btn btn-primary" id="btn-sewa-baru">
+            <i class="fas fa-key"></i> Sewa Mobil Sekarang
+        </a>
+    </div>
+    {% endif %}
+
+    {% if penyewaans %}
+    <div style="margin-top:20px;">
+        <a href="{% url 'sewa_mobil' %}" class="btn btn-primary" id="btn-sewa-lagi">
+            <i class="fas fa-plus"></i> Sewa Mobil Lagi
+        </a>
+    </div>
+    {% endif %}
+</div>
+</body>
+</html>

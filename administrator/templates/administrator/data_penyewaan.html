@@ -1,0 +1,125 @@
+{% extends 'administrator/base_admin.html' %}
+
+{% block title %}Data Penyewaan{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+        <div class="table-responsive"><table class="table table-bordered table-striped mt-3 align-middle">
+
+<tr>
+
+<th>No</th>
+<th>Pelanggan</th>
+<th>Mobil</th>
+<th>Tanggal Sewa</th>
+<th>Tanggal Kembali</th>
+<th>Total</th>
+<th>Pembayaran</th>
+<th>Status</th>
+<th>Aksi</th>
+
+</tr>
+
+{% for p in penyewaans %}
+
+<tr>
+
+<td>{{ forloop.counter }}</td>
+
+<td>
+{% if p.nama_tamu %}
+    <b>{{ p.nama_tamu }}</b><br>
+    <small style="color:#888;">{{ p.nik_tamu|default:"" }} | {{ p.no_telepon_tamu|default:"" }}</small><br>
+    <small style="color:#aaa;font-style:italic;">Tamu</small>
+{% elif p.pelanggan and p.pelanggan.username != '__guest__' %}
+    {{ p.pelanggan.username }}
+{% else %}
+    <span style="color:#aaa;">Tamu</span>
+{% endif %}
+</td>
+
+<td>{{ p.mobil.nama_mobil }}</td>
+
+<td>{{ p.tanggal_sewa }}</td>
+
+<td>{{ p.tanggal_kembali }}</td>
+
+<td>Rp {{ p.total_biaya }}</td>
+
+<td>
+{% if p.pembayaran %}
+    {% if p.pembayaran.status == 'lunas' %}
+        <span style="color:green;font-weight:bold">Lunas</span>
+    {% else %}
+        <span style="color:#b7791f;font-weight:bold">Menunggu</span>
+    {% endif %}
+{% else %}
+    <span style="color:red;font-weight:bold">Belum ada data</span>
+{% endif %}
+</td>
+
+<td class="status">
+
+{{ p.get_status_display }}
+
+</td>
+
+<td>
+
+{% if p.status == 'diajukan' %}
+
+<form method="post" action="{% url 'setujui_penyewaan' p.id %}" style="display:inline">{% csrf_token %}<button type="submit" class="btn btn-primary">
+    ✅ Setujui
+</button></form>
+
+|
+
+<form method="post" action="{% url 'tolak_penyewaan' p.id %}" style="display:inline">{% csrf_token %}<button type="submit" class="btn btn-primary">
+    ❌ Tolak
+</button></form>
+
+{% elif p.status == 'disetujui' %}
+
+<a href="{% url 'tambah_pengembalian' p.id %}">
+    🚗 Pengembalian
+</a>
+
+{% else %}
+
+-
+
+{% endif %}
+
+<form method="post" action="{% url 'hapus_penyewaan' p.id %}" style="display:inline" onsubmit="return confirm('Hapus data penyewaan ini?')">{% csrf_token %}<button type="submit" style="background:#b02a37;color:#fff;border:0;padding:8px;border-radius:4px" class="btn btn-primary">Hapus</button></form>
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+<td colspan="9">
+
+Belum ada penyewaan.
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table></div>
+
+<br>
+
+<a href="/administrator/" class="btn btn-primary">
+
+← Dashboard
+
+</a>
+    </div>
+</div>
+{% endblock %}

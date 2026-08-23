@@ -1,0 +1,71 @@
+{% extends 'administrator/base_admin.html' %}
+
+{% block title %}Tambah Mobil{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+        <h3 class="mb-4 text-primary"><i class="fas fa-plus-circle"></i> Form Tambah Mobil</h3>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Nama Mobil *</label>
+            <input type="text" name="nama_mobil" required class="form-control" placeholder="Contoh: Avanza, Brio, Xpander">
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Merk *</label>
+            <input type="text" name="merk" required class="form-control" placeholder="Contoh: Toyota, Honda">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Nomor Polisi *</label>
+            <input type="text" name="nomor_polisi" required class="form-control" placeholder="Contoh: B 1234 CD">
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Foto Mobil</label>
+            <input type="file" name="foto" accept="image/*" class="form-control">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label class="form-label fw-bold">Harga Harian *</label>
+            <div class="input-group">
+                <span class="input-group-text">Rp</span>
+                <input type="number" name="harga_harian" required class="form-control">
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label class="form-label fw-bold">Harga Mingguan *</label>
+            <div class="input-group">
+                <span class="input-group-text">Rp</span>
+                <input type="number" name="harga_mingguan" required class="form-control">
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label class="form-label fw-bold">Harga Bulanan *</label>
+            <div class="input-group">
+                <span class="input-group-text">Rp</span>
+                <input type="number" name="harga_bulanan" required class="form-control">
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary px-4"><i class="fas fa-save"></i> Simpan</button>
+        <a href="{% url 'data_mobil' %}" class="btn btn-secondary px-4"><i class="fas fa-times"></i> Batal</a>
+    </div>
+
+</form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'administrator/base_admin.html' %}
+
+{% block title %}Tambah Akun Administrator{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+        <h3 class="mb-4 text-primary"><i class="fas fa-user-plus"></i> Tambah Akun Administrator / Petugas</h3>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Username *</label>
+                    <input type="text" name="username" required class="form-control">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Password *</label>
+                    <input type="password" name="password" required class="form-control">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Nama Depan</label>
+                    <input type="text" name="first_name" class="form-control">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Nama Belakang</label>
+                    <input type="text" name="last_name" class="form-control">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Email</label>
+                    <input type="email" name="email" class="form-control">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">NIK</label>
+                    <input type="text" name="nik" class="form-control">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">No Telepon</label>
+                    <input type="text" name="no_telepon" class="form-control">
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary px-4"><i class="fas fa-save"></i> Simpan Akun</button>
+                <a href="{% url 'data_petugas' %}" class="btn btn-secondary px-4"><i class="fas fa-times"></i> Batal</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

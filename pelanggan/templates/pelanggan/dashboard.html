@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard Pelanggan</title>
+    {% if global_favicon %}
+    <link rel="icon" type="image/x-icon" href="{{ global_favicon }}">
+    {% else %}
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    {% endif %}
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, Helvetica, sans-serif;
+        }
+
+        body{
+            background:#f4f6f9;
+        }
+
+        .header{
+            background:#2c5d73;
+            color:#ffd54f;
+            padding:20px 40px;
+            font-size:32px;
+            font-weight:bold;
+        }
+
+        .container{
+            width:90%;
+            margin:30px auto;
+        }
+
+        .welcome{
+            background:white;
+            padding:25px;
+            border-radius:8px;
+            box-shadow:0 2px 8px rgba(0,0,0,.15);
+            margin-bottom:25px;
+        }
+
+        .welcome h2{
+            color:#2c5d73;
+            margin-bottom:10px;
+        }
+
+        .menu{
+            display:grid;
+            grid-template-columns:repeat(2,1fr);
+            gap:20px;
+        }
+
+        .card{
+            background:white;
+            border-radius:8px;
+            padding:25px;
+            text-align:center;
+            box-shadow:0 2px 8px rgba(0,0,0,.15);
+            transition:.3s;
+        }
+
+        .card:hover{
+            transform:translateY(-5px);
+        }
+
+        @media (max-width: 768px){
+            .container{width:auto;margin:15px}
+            .menu{grid-template-columns:1fr}
+            .header{padding:15px 20px;font-size:24px}
+        }
+
+        .card h3{
+            color:#2c5d73;
+            margin-bottom:15px;
+        }
+
+        .btn{
+            display:inline-block;
+            padding:10px 18px;
+            background:#2c5d73;
+            color:white;
+            text-decoration:none;
+            border-radius:5px;
+            border:none;
+            cursor:pointer;
+        }
+
+        .btn:hover{
+            background:#214656;
+        }
+
+        .btn-danger{
+            background:#e53e3e;
+        }
+
+        .btn-danger:hover{
+            background:#c53030;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="header" style="display: flex; align-items: center;">
+    {% if global_logo_toko %}
+        <img src="{{ global_logo_toko }}" alt="Logo Toko" style="max-height: 40px; width: auto; margin-right: 10px;">
+    {% else %}
+        Rental Mobil
+    {% endif %}
+</div>
+
+<div class="container">
+
+    <div class="welcome">
+        <h2>Selamat Datang, {{ request.user.username }}</h2>
+        <p>Silakan pilih menu di bawah ini.</p>
+        <a href="{% url 'keranjang_penyewaan' %}" class="btn">🛒 Lihat Keranjang Penyewaan</a>
+    </div>
+
+    <div class="menu">
+
+        <div class="card" style="display:flex; flex-direction:column; justify-content:space-between; height: 100%;">
+            <div>
+                <h3 style="color:#2d3748; display:flex; align-items:center; gap:10px;"><i class="fas fa-car-side text-primary"></i> Daftar Mobil</h3>
+                <p style="color:#718096; margin-top:10px;">Jelajahi seluruh koleksi mobil kami yang tersedia untuk Anda sewa.</p>
+            </div>
+            <a href="{% url 'daftar_mobil' %}" class="btn" style="margin-top:20px;">
+                <i class="fas fa-search"></i> Buka Katalog
+            </a>
+        </div>
+
+        <div class="card" style="display:flex; flex-direction:column; justify-content:space-between; height: 100%;">
+            <div>
+                <h3 style="color:#2d3748; display:flex; align-items:center; gap:10px;"><i class="fas fa-key text-success"></i> Sewa Mobil</h3>
+                <p style="color:#718096; margin-top:10px;">Mulai buat pengajuan sewa mobil baru sesuai kebutuhan perjalanan Anda.</p>
+            </div>
+            <a href="{% url 'sewa_mobil' %}" class="btn" style="background:#10b981; margin-top:20px;">
+                <i class="fas fa-plus-circle"></i> Ajukan Sewa
+            </a>
+        </div>
+
+        <div class="card" style="display:flex; flex-direction:column; justify-content:space-between; height: 100%;">
+            <div>
+                <h3 style="color:#2d3748; display:flex; align-items:center; gap:10px;"><i class="fas fa-history text-warning"></i> Riwayat</h3>
+                <p style="color:#718096; margin-top:10px;">Pantau dan kelola seluruh transaksi penyewaan yang pernah Anda lakukan.</p>
+            </div>
+            <a href="{% url 'riwayat_penyewaan' %}" class="btn" style="background:#f59e0b; margin-top:20px;">
+                <i class="fas fa-list"></i> Lihat Riwayat
+            </a>
+        </div>
+
+        <div class="card" style="display:flex; flex-direction:column; justify-content:space-between; height: 100%;">
+            <div>
+                <h3 style="color:#2d3748; display:flex; align-items:center; gap:10px;"><i class="fas fa-sign-out-alt text-danger"></i> Keluar</h3>
+                <p style="color:#718096; margin-top:10px;">Akhiri sesi Anda dan keluar dengan aman dari sistem ini.</p>
+            </div>
+            <button type="button" onclick="konfirmasiLogout()" class="btn btn-danger" style="margin-top:20px; width:100%;">
+                <i class="fas fa-power-off"></i> Logout
+            </button>
+            <form id="logout-form" method="post" action="{% url 'logout' %}" style="display:none;">
+                {% csrf_token %}
+            </form>
+        </div>
+
+    </div>
+
+    <!-- GLOBAL CUSTOMER FOOTER -->
+    <footer style="margin-top:50px; text-align:center; color:#718096; padding:20px 0; font-size: 0.9rem; border-top: 1px solid #e2e8f0;">
+        Sistem Informasi Rental Mobil &copy; 2026. Developed by <strong style="color: #3b82f6;">shxploit</strong>. Hak Cipta Dilindungi.
+    </footer>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function konfirmasiLogout() {
+    Swal.fire({
+        title: 'Yakin ingin Logout?',
+        text: 'Anda akan keluar dari sesi ini.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#e53e3e',
+        cancelButtonColor: '#718096',
+        confirmButtonText: '✓ Ya, Logout',
+        cancelButtonText: '✕ Batal',
+        position: 'center',
+        reverseButtons: true,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('logout-form').submit();
+        }
+    });
+}
+</script>
+</body>
+</html>

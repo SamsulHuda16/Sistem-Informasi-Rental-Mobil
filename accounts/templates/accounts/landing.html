@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rental Mobil — Sewa Mudah, Harga Terjangkau</title>
+    {% if global_favicon %}
+    <link rel="icon" type="image/x-icon" href="{{ global_favicon }}">
+    {% else %}
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    {% endif %}
+    <meta name="description"
+        content="Layanan rental mobil terpercaya. Lihat katalog, pilih mobil, dan pesan langsung tanpa perlu daftar akun.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a3c5e;
+            --primary-light: #2563a8;
+            --accent: #f59e0b;
+            --accent-light: #fcd34d;
+            --bg: #f0f4f8;
+            --white: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --shadow: 0 4px 24px rgba(26, 60, 94, .12);
+            --shadow-lg: 0 8px 40px rgba(26, 60, 94, .18);
+            --radius: 14px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ── NAVBAR ── */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(26, 60, 94, .97);
+            backdrop-filter: blur(10px);
+            padding: 0 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 65px;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, .25);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--accent);
+            font-size: 1.3rem;
+            font-weight: 800;
+            text-decoration: none;
+            letter-spacing: -.3px;
+        }
+
+        .nav-brand i {
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, .9);
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: .9rem;
+            font-weight: 600;
+            transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, .15);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .nav-link.cart {
+            background: linear-gradient(135deg, rgba(245, 158, 11, .2), rgba(245, 158, 11, .05));
+            color: var(--accent-light);
+            border: 1px solid rgba(245, 158, 11, .4);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, .1);
+        }
+
+        .nav-link.cart:hover {
+            background: linear-gradient(135deg, rgba(245, 158, 11, .3), rgba(245, 158, 11, .1));
+            box-shadow: 0 6px 16px rgba(245, 158, 11, .2);
+        }
+
+        .nav-link.login-btn {
+            background: linear-gradient(135deg, var(--accent), #fcd34d);
+            color: var(--primary);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, .3);
+            border: none;
+        }
+
+        .nav-link.login-btn:hover {
+            background: linear-gradient(135deg, #fcd34d, #fde68a);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, .4);
+        }
+
+        .nav-divider {
+            width: 1px;
+            height: 24px;
+            background-color: rgba(255, 255, 255, 0.3);
+            margin: 0 5px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #ef4444;
+            color: white;
+            font-size: .7rem;
+            font-weight: 700;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            background: linear-gradient(rgba(26, 60, 94, 0.75), rgba(37, 99, 168, 0.75)),
+            url('{{ hero_bg_url }}') no-repeat center center;
+            background-size: cover;
+            padding: 80px 5% 90px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -20%;
+            width: 60%;
+            height: 200%;
+            background: radial-gradient(ellipse, rgba(245, 158, 11, .12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            right: -10%;
+            width: 50%;
+            height: 150%;
+            background: radial-gradient(ellipse, rgba(255, 255, 255, .06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            background: rgba(245, 158, 11, .2);
+            color: var(--accent-light);
+            font-size: .82rem;
+            font-weight: 600;
+            padding: 5px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(245, 158, 11, .35);
+            margin-bottom: 20px;
+            letter-spacing: .3px;
+        }
+
+        .hero h1 {
+            color: white;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 18px;
+        }
+
+        .hero h1 span {
+            color: var(--accent);
+        }
+
+        .hero p {
+            color: rgba(255, 255, 255, .75);
+            font-size: 1.05rem;
+            max-width: 540px;
+            margin: 0 auto 35px;
+            line-height: 1.7;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 28px;
+            border-radius: 10px;
+            font-size: .95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all .25s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, .4);
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, .1);
+            color: white;
+            border: 1.5px solid rgba(255, 255, 255, .3);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, .18);
+            transform: translateY(-2px);
+        }
+
+        /* ── STATS STRIP ── */
+        .stats {
+            background: white;
+            padding: 24px 5%;
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, .07);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-num {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: .8rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        /* ── SECTIONS ── */
+        .section {
+            padding: 60px 5%;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-header h2 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            font-size: .95rem;
+        }
+
+        /* ── CATALOG GRID ── */
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 22px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .car-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: transform .25s, box-shadow .25s;
+        }
+
+        .car-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .car-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: linear-gradient(135deg, rgba(219, 234, 254, 0.4), rgba(224, 242, 254, 0.4)),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 50' width='100' height='50'%3E%3Cpath d='M8 33c0 0 3-7 12-8 6-1 13-11 28-13 15-2 27 1 33 7 6 6 13 8 16 10 2 1 1 6 1 6h-6c0-6-10-6-10 0H32c0-6-10-6-10 0H8z' fill='%231a3c5e' fill-opacity='0.05'/%3E%3Ccircle cx='27' cy='35' r='5' fill='%231a3c5e' fill-opacity='0.05'/%3E%3Ccircle cx='87' cy='35' r='5' fill='%231a3c5e' fill-opacity='0.05'/%3E%3C/svg%3E");
+            background-size: auto, 80px 40px;
+            background-repeat: no-repeat, repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-light);
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .car-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .car-body {
+            padding: 18px;
+        }
+
+        .car-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: .73rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .badge-available {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-unavailable {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .car-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .car-merk {
+            font-size: .83rem;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+        }
+
+        .car-prices {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .price-box {
+            background: var(--bg);
+            border-radius: 8px;
+            padding: 8px 6px;
+            text-align: center;
+        }
+
+        .price-label {
+            font-size: .68rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .price-value {
+            font-size: .82rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 2px;
+        }
+
+        .car-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 9px 16px;
+            font-size: .85rem;
+            border-radius: 8px;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .btn-dark {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-dark:hover {
+            background: var(--primary-light);
+            transform: translateY(-1px);
+        }
+
+        .btn-gold {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        .btn-gold:hover {
+            background: var(--accent-light);
+            transform: translateY(-1px);
+        }
+
+        .btn-disabled {
+            background: #e2e8f0;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        /* ── HOW IT WORKS ── */
+        .how-bg {
+            background: white;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 28px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .step-card {
+            text-align: center;
+            padding: 28px 20px;
+            border-radius: var(--radius);
+            background: var(--bg);
+            transition: transform .2s;
+        }
+
+        .step-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .step-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 1.5rem;
+            color: white;
+            box-shadow: 0 4px 14px rgba(26, 60, 94, .25);
+        }
+
+        .step-title {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .step-desc {
+            font-size: .85rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* ── CTA BANNER ── */
+        .cta-banner {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            padding: 60px 5%;
+            text-align: center;
+        }
+
+        .cta-banner h2 {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 14px;
+        }
+
+        .cta-banner p {
+            color: rgba(255, 255, 255, .75);
+            margin-bottom: 28px;
+            font-size: .95rem;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            background: #0f2540;
+            color: rgba(255, 255, 255, .6);
+            text-align: center;
+            padding: 22px 5%;
+            font-size: .85rem;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        /* ── MESSAGES ── */
+        .messages-box {
+            max-width: 900px;
+            margin: 16px auto;
+            padding: 0 5%;
+        }
+
+        .alert {
+            padding: 12px 18px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: .9rem;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            color: #166534;
+            border-left: 4px solid #22c55e;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            nav {
+                padding: 0 4%;
+            }
+
+            .nav-links .nav-link:not(.cart):not(.login-btn) {
+                display: none;
+            }
+
+            .hero {
+                padding: 55px 5% 65px;
+            }
+
+            .stats {
+                gap: 28px;
+            }
+
+            .section {
+                padding: 45px 4%;
+            }
+        }
+
+        /* ── ANIMATION ── */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-up {
+            animation: fadeUp .6s ease both;
+        }
+
+        .delay-1 {
+            animation-delay: .1s;
+        }
+
+        .delay-2 {
+            animation-delay: .2s;
+        }
+
+        .delay-3 {
+            animation-delay: .3s;
+        }
+    </style>
+</head>
+
+<body>
+
+    {% include "partials/messages_popup.html" %}
+
+    <!-- NAVBAR -->
+    <nav>
+        <div class="nav-left" style="display: flex; align-items: center; gap: 20px;">
+            <a href="{% url 'landing' %}" class="nav-brand" id="nav-brand">
+                {% if global_logo_toko %}
+                    <img src="{{ global_logo_toko }}" alt="Logo Toko" style="max-height: 40px; width: auto;">
+                {% else %}
+                    <i class="fas fa-car"></i> RentalMobil
+                {% endif %}
+            </a>
+            
+            <div class="nav-divider d-none d-md-block"></div>
+
+            <div class="nav-links">
+                <a href="#katalog" class="nav-link" id="nav-katalog"><i class="fas fa-list"></i> Katalog</a>
+                <a href="{% url 'sewa_mobil' %}" class="nav-link" id="nav-sewa"><i class="fas fa-key"></i> Sewa</a>
+                <a href="{% url 'riwayat_penyewaan' %}" class="nav-link" id="nav-riwayat"><i class="fas fa-history"></i> Riwayat</a>
+            </div>
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'keranjang_penyewaan' %}" class="nav-link cart" id="nav-cart">
+                <i class="fas fa-shopping-cart"></i> Keranjang
+                {% if jumlah_keranjang > 0 %}
+                <span class="badge">{{ jumlah_keranjang }}</span>
+                {% endif %}
+            </a>
+            
+            <div class="nav-divider"></div>
+
+            <a href="{% url 'login' %}" class="nav-link login-btn" id="nav-login">
+                <i class="fas fa-lock"></i> Admin Login
+            </a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="fade-up">
+            <span class="hero-tag"><i class="fas fa-star"></i> Terpercaya &amp; Terjangkau</span>
+        </div>
+        <p class="fade-up delay-2">Pilih mobil favorit Anda, isi form penyewaan, dan pesan sekarang. Proses cepat, harga
+            transparan, langsung dari halaman ini.</p>
+        <div class="hero-btns fade-up delay-3">
+            <a href="#katalog" class="btn btn-primary" id="hero-lihat-katalog">
+                <i class="fas fa-car-side"></i> Lihat Katalog
+            </a>
+            <a href="{% url 'sewa_mobil' %}" class="btn btn-outline" id="hero-sewa-sekarang">
+                <i class="fas fa-calendar-check"></i> Sewa Sekarang
+            </a>
+        </div>
+    </section>
+
+    <!-- STATS -->
+    <div class="stats">
+        <div class="stat-item">
+            <div class="stat-num">{{ mobils|length }}+</div>
+            <div class="stat-label">Unit Mobil Tersedia</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">3</div>
+            <div class="stat-label">Pilihan Metode Bayar</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">Harian</div>
+            <div class="stat-label">Tarif Fleksibel</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">0</div>
+            <div class="stat-label">Biaya Pendaftaran</div>
+        </div>
+    </div>
+
+    <!-- MESSAGES -->
+    {% if messages %}
+    <div class="messages-box">
+        {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-error{% else %}alert-success{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- CATALOG -->
+    <section class="section" id="katalog"
+        {% if katalog_bg_url %}style="background: linear-gradient(rgba(240, 244, 248, 0.85), rgba(240, 244, 248, 0.85)), url('{{ katalog_bg_url }}') no-repeat center center; background-size: cover; background-attachment: fixed;"{% endif %}>
+        <div class="section-header">
+            <h2><i class="fas fa-car"></i> Katalog Mobil</h2>
+            <p>Temukan mobil yang sesuai kebutuhan dan anggaran Anda</p>
+        </div>
+
+        <div class="catalog-grid">
+            {% for mobil in mobils %}
+            <div class="car-card">
+                <div class="car-img">
+                    {% if mobil.foto %}
+                    <img src="{{ mobil.foto.url }}" alt="{{ mobil.nama_mobil }}">
+                    {% else %}
+                    <!-- Modern Detailed Transparent Car Line-Art SVG -->
+                    <svg viewBox="0 0 500 250"
+                        style="width: 85%; height: 85%; opacity: 0.25; color: var(--primary-light);">
+                        <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <!-- Wheels -->
+                            <circle cx="130" cy="180" r="35" stroke-dasharray="10 5" />
+                            <circle cx="130" cy="180" r="15" />
+                            <circle cx="370" cy="180" r="35" stroke-dasharray="10 5" />
+                            <circle cx="370" cy="180" r="15" />
+                            <!-- Car body outline -->
+                            <path
+                                d="M 40,180 L 70,180 A 45,45 0 0,1 155,180 L 345,180 A 45,45 0 0,1 430,180 L 460,180 C 475,180 480,170 480,160 C 480,140 450,135 440,130 C 430,125 410,120 400,105 C 385,85 350,55 300,50 L 200,50 C 160,55 130,90 115,110 C 100,125 70,130 50,140 C 35,145 20,155 20,165 C 20,175 30,180 40,180 Z" />
+                            <!-- Windows & Interior details -->
+                            <path
+                                d="M 200,55 L 295,55 C 335,60 365,85 375,105 L 390,105 C 390,105 355,120 310,120 L 150,120 C 145,110 165,80 200,55 Z"
+                                fill="currentColor" fill-opacity="0.1" />
+                            <path d="M 270,55 L 270,120" />
+                            <!-- Door handles -->
+                            <path d="M 285,130 L 305,130" stroke-width="4" />
+                            <path d="M 185,130 L 205,130" stroke-width="4" />
+                            <!-- Lights -->
+                            <path d="M 30,150 L 50,150" />
+                            <path d="M 470,145 C 475,145 480,145 480,148 L 478,155 C 478,155 470,155 470,152 Z"
+                                fill="#ef4444" stroke="#ef4444" />
+                        </g>
+                    </svg>
+                    {% endif %}
+                </div>
+                <div class="car-body">
+                    {% if mobil.tersedia %}
+                    <span class="car-badge badge-available"><i class="fas fa-check-circle"></i> Tersedia</span>
+                    {% else %}
+                    <span class="car-badge badge-unavailable"><i class="fas fa-times-circle"></i> Sedang Disewa</span>
+                    {% endif %}
+
+                    <div class="car-name">{{ mobil.nama_mobil }}</div>
+                    <div class="car-merk">{{ mobil.merk }} &bull; {{ mobil.nomor_polisi }}</div>
+
+                    <div class="car-prices">
+                        <div class="price-box">
+                            <div class="price-label">Per Hari</div>
+                            <div class="price-value">Rp {{ mobil.harga_harian|floatformat:0 }}</div>
+                        </div>
+                        <div class="price-box">
+                            <div class="price-label">Per Minggu</div>
+                            <div class="price-value">Rp {{ mobil.harga_mingguan|floatformat:0 }}</div>
+                        </div>
+                        <div class="price-box">
+                            <div class="price-label">Per Bulan</div>
+                            <div class="price-value">Rp {{ mobil.harga_bulanan|floatformat:0 }}</div>
+                        </div>
+                    </div>
+
+                    <div class="car-actions">
+                        {% if mobil.tersedia %}
+                        <a href="{% url 'sewa_mobil' %}" class="btn btn-gold btn-sm" id="sewa-mobil-{{ mobil.id }}">
+                            <i class="fas fa-key"></i> Sewa
+                        </a>
+                        <a href="{% url 'daftar_mobil' %}" class="btn btn-dark btn-sm" id="detail-mobil-{{ mobil.id }}">
+                            <i class="fas fa-info-circle"></i> Detail
+                        </a>
+                        {% else %}
+                        <span class="btn btn-disabled btn-sm">
+                            <i class="fas fa-ban"></i> Tidak Tersedia
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div style="grid-column:1/-1; text-align:center; padding: 40px; color: var(--text-muted);">
+                <i class="fas fa-car" style="font-size:3rem; margin-bottom:16px; display:block; opacity:.4;"></i>
+                Belum ada mobil yang terdaftar.
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section how-bg">
+        <div class="section-header">
+            <h2>Cara Sewa Mudah</h2>
+            <p>Hanya 3 langkah, langsung bisa berkendara</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-icon"><i class="fas fa-search"></i></div>
+                <div class="step-title">1. Pilih Mobil</div>
+                <div class="step-desc">Lihat katalog dan pilih mobil yang sesuai kebutuhan dan budget Anda.</div>
+            </div>
+            <div class="step-card">
+                <div class="step-icon"><i class="fas fa-calendar-alt"></i></div>
+                <div class="step-title">2. Isi Form &amp; Bayar</div>
+                <div class="step-desc">Isi data nama, tanggal sewa, dan pilih metode pembayaran yang Anda inginkan.
+                </div>
+            </div>
+            <div class="step-card">
+                <div class="step-icon"><i class="fas fa-car-side"></i></div>
+                <div class="step-title">3. Ambil Mobil</div>
+                <div class="step-desc">Setelah disetujui admin, mobil siap diambil sesuai jadwal yang telah ditentukan.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA BANNER -->
+    <section class="cta-banner">
+        <h2>Siap Mulai Perjalanan Anda?</h2>
+        <p>Pesan sekarang tanpa perlu mendaftar akun. Cepat, mudah, dan transparan.</p>
+        <a href="{% url 'sewa_mobil' %}" class="btn btn-primary" id="cta-sewa-sekarang">
+            <i class="fas fa-rocket"></i> Sewa Mobil Sekarang
+        </a>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; {% now "Y" %} RentalMobil &mdash; Developed by <strong style="color: #fcd34d;">shxploit</strong>. Hak cipta dilindungi. |
+            <a href="{% url 'login' %}">Login Admin</a>
+        </p>
+    </footer>
+
+</body>
+
+</html>

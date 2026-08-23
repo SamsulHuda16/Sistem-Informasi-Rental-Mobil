@@ -1,0 +1,89 @@
+{% extends 'administrator/base_admin.html' %}
+
+{% block title %}Data Pelanggan{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+        <div class="table-responsive"><table class="table table-bordered table-striped mt-3 align-middle">
+
+<tr>
+
+<th>No</th>
+<th>Username</th>
+<th>Nama</th>
+<th>NIK</th>
+<th>No Telepon</th>
+<th>Status Verifikasi</th>
+<th>Aksi</th>
+
+</tr>
+
+{% for pelanggan in pelanggans %}
+
+<tr>
+
+<td>{{ forloop.counter }}</td>
+
+<td>{{ pelanggan.username }}</td>
+
+<td>{{ pelanggan.first_name }} {{ pelanggan.last_name }}</td>
+
+<td>{{ pelanggan.nik }}</td>
+
+<td>{{ pelanggan.no_telepon }}</td>
+
+<td class="status">
+
+{% if pelanggan.is_verified %}
+✅ Sudah Diverifikasi
+{% else %}
+❌ Belum Diverifikasi
+{% endif %}
+
+</td>
+
+<td>
+
+<a href="{% url 'edit_pelanggan' pelanggan.id %}" class="btn btn-primary">Edit</a>
+
+{% if not pelanggan.is_verified %}
+
+<form method="post" action="{% url 'verifikasi_pelanggan' pelanggan.id %}" style="display:inline">{% csrf_token %}<button type="submit" class="btn btn-primary">
+Verifikasi
+</button></form>
+
+{% else %}
+
+-
+
+{% endif %}
+
+<form method="post" action="{% url 'hapus_pelanggan' pelanggan.id %}" style="display:inline" onsubmit="return confirm('Hapus pelanggan ini?')">{% csrf_token %}<button type="submit" class="btn btn-primary" style="background:#b02a37">Hapus</button></form>
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+<td colspan="7">
+Belum ada pelanggan.
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table></div>
+
+<br>
+
+<a href="/administrator/" class="btn btn-primary">
+← Dashboard
+</a>
+    </div>
+</div>
+{% endblock %}

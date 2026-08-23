@@ -1,0 +1,65 @@
+{% extends 'administrator/base_admin.html' %}
+
+{% block title %}Data Pengembalian{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+        <div class="table-responsive"><table class="table table-bordered table-striped mt-3 align-middle">
+
+<tr>
+    <th>No</th>
+    <th>Pelanggan</th>
+    <th>Mobil</th>
+    <th>Tanggal Pengembalian</th>
+    <th>Kondisi Mobil</th>
+    <th>Denda</th>
+    <th>Aksi</th>
+</tr>
+
+{% for p in pengembalians %}
+
+<tr>
+
+<td>{{ forloop.counter }}</td>
+
+<td>
+    {% if p.penyewaan.nama_tamu %}{{ p.penyewaan.nama_tamu }} (Tamu)
+    {% elif p.penyewaan.pelanggan and p.penyewaan.pelanggan.username != '__guest__' %}{{ p.penyewaan.pelanggan.username }}
+    {% else %}Tamu{% endif %}
+</td>
+
+<td>{{ p.penyewaan.mobil.nama_mobil }}</td>
+
+<td>{{ p.tanggal_pengembalian }}</td>
+
+<td>{{ p.kondisi_mobil }}</td>
+
+<td>Rp {{ p.denda }}</td>
+
+<td><form method="post" action="{% url 'hapus_pengembalian' p.id %}" onsubmit="return confirm('Hapus data pengembalian ini?')">{% csrf_token %}<button type="submit" class="btn btn-primary" style="background:#b02a37">Hapus</button></form></td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+<td colspan="7">
+Belum ada data pengembalian.
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table></div>
+
+<br>
+
+<a href="/administrator/" class="btn btn-primary">
+← Dashboard
+</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends 'administrator/base_admin.html' %}
+
+{% block title %}Data Pembayaran{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+        <div class="table-responsive"><table class="table table-bordered table-striped mt-3 align-middle">
+
+<tr>
+
+<th>No</th>
+<th>Pelanggan</th>
+<th>Mobil</th>
+<th>Jumlah</th>
+<th>Metode</th>
+<th>Bukti Transfer</th>
+<th>Status</th>
+<th>Tanggal Bayar</th>
+<th>Aksi</th>
+
+</tr>
+
+{% for p in pembayarans %}
+
+<tr>
+
+<td>{{ forloop.counter }}</td>
+
+<td>
+    {% if p.penyewaan.nama_tamu %}{{ p.penyewaan.nama_tamu }} (Tamu)
+    {% elif p.penyewaan.pelanggan and p.penyewaan.pelanggan.username != '__guest__' %}{{ p.penyewaan.pelanggan.username }}
+    {% else %}Tamu{% endif %}
+</td>
+
+<td>{{ p.penyewaan.mobil.nama_mobil }}</td>
+
+<td>Rp {{ p.jumlah }}</td>
+
+<td>{{ p.metode }}</td>
+
+<td>
+    {% if p.bukti_pembayaran %}
+        <a href="{{ p.bukti_pembayaran.url }}" target="_blank">
+            <img src="{{ p.bukti_pembayaran.url }}" alt="Bukti Transfer" width="70" height="70" style="object-fit:cover; border-radius:5px; border:1px solid #ccc;">
+        </a>
+    {% else %}
+        <span style="color:#aaa;">Belum Upload</span>
+    {% endif %}
+</td>
+
+<td>
+    {% if p.status == 'lunas' %}
+        <span style="color:green; font-weight:bold;">Lunas</span>
+    {% else %}
+        <span style="color:orange; font-weight:bold;">Menunggu</span>
+    {% endif %}
+</td>
+
+<td>{{ p.tanggal_bayar|default:"-" }}</td>
+
+<td>
+
+{% if p.status == 'menunggu' %}
+
+<form method="post" action="{% url 'lunas_pembayaran' p.id %}" style="display:inline" onsubmit="return confirm('Tandai pembayaran ini sebagai LUNAS?')">
+    {% csrf_token %}
+    <button type="submit" class="btn-lunas">✔ Lunas</button>
+</form>
+
+<form method="post" action="{% url 'hapus_pembayaran' p.id %}" style="display:inline" onsubmit="return confirm('Hapus data pembayaran ini?')">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary" style="background:#b02a37; padding:8px 12px;">Hapus</button>
+</form>
+
+{% else %}
+
+    <span style="color:green;">✔ Lunas</span>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+<td colspan="9">
+
+Belum ada data pembayaran.
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table></div>
+
+<br>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+{% include "partials/messages_popup.html" %}
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Keranjang Penyewaan | Rental Mobil</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root { --primary:#1a3c5e; --accent:#f59e0b; --bg:#f0f4f8; }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter',Arial,sans-serif; background:var(--bg); }
+        .topbar { background:var(--primary); color:#fcd34d; padding:14px 5%; font-size:1.2rem; font-weight:800; display:flex; align-items:center; justify-content:space-between; }
+        .topbar a { color:rgba(255,255,255,.7); font-size:.85rem; font-weight:500; text-decoration:none; }
+        .topbar a:hover { color:#fff; }
+        .container { width:90%; max-width:900px; margin:30px auto; background:white; padding:28px; border-radius:14px; box-shadow:0 4px 24px rgba(26,60,94,.1); }
+        h2 { color:var(--primary); font-size:1.25rem; font-weight:700; margin-bottom:22px; display:flex; align-items:center; gap:8px; }
+        table { width:100%; border-collapse:collapse; }
+        th,td { padding:12px 14px; border-bottom:1px solid #e2e8f0; text-align:left; font-size:.9rem; }
+        th { background:var(--primary); color:#fff; font-weight:600; }
+        tr:hover td { background:#f8fafc; }
+        .btn { display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:8px; font-size:.85rem; font-weight:600; text-decoration:none; border:none; cursor:pointer; font-family:'Inter',sans-serif; transition:all .2s; }
+        .btn-primary { background:var(--primary); color:white; }
+        .btn-primary:hover { background:#2563a8; transform:translateY(-1px); }
+        .btn-gold { background:var(--accent); color:var(--primary); }
+        .btn-gold:hover { background:#fcd34d; transform:translateY(-1px); }
+        .btn-danger { background:#ef4444; color:white; }
+        .btn-danger:hover { background:#dc2626; }
+        .total-row { display:flex; align-items:center; justify-content:flex-end; gap:16px; margin-top:20px; flex-wrap:wrap; }
+        .total-label { font-size:1.1rem; font-weight:700; color:var(--primary); }
+        .actions-row { display:flex; gap:10px; margin-top:18px; flex-wrap:wrap; }
+        .empty-state { text-align:center; padding:50px 20px; color:#94a3b8; }
+        .empty-state i { font-size:3rem; margin-bottom:16px; display:block; }
+        @media (max-width:768px) { .container{width:auto;margin:15px;padding:16px} table{font-size:.8rem} }
+    </style>
+</head>
+<body>
+<div class="topbar">
+    <span><i class="fas fa-shopping-cart"></i> Keranjang Penyewaan</span>
+    <div style="display:flex;gap:14px;">
+        <a href="{% url 'sewa_mobil' %}"><i class="fas fa-plus"></i> Tambah Mobil</a>
+        <a href="{% url 'landing' %}"><i class="fas fa-home"></i> Beranda</a>
+    </div>
+</div>
+
+<div class="container">
+    <h2><i class="fas fa-shopping-cart"></i> Keranjang Penyewaan</h2>
+
+    {% if items %}
+    <table>
+        <tr>
+            <th>Mobil</th>
+            <th>Pemesan</th>
+            <th>Periode Sewa</th>
+            <th>Lama</th>
+            <th>Total Biaya</th>
+            <th>Aksi</th>
+        </tr>
+        {% for item in items %}
+        <tr>
+            <td><b>{{ item.nama_mobil }}</b></td>
+            <td>
+                <b>{{ item.nama_tamu|default:"-" }}</b>
+                {% if item.nik_tamu %}<br><small style="color:#64748b;">NIK: {{ item.nik_tamu }}</small>{% endif %}
+                {% if item.no_telepon_tamu %}<br><small style="color:#64748b;">{{ item.no_telepon_tamu }}</small>{% endif %}
+            </td>
+            <td>{{ item.tanggal_sewa }} s/d {{ item.tanggal_kembali }}</td>
+            <td>{{ item.lama_sewa }} hari</td>
+            <td><b>Rp {{ item.total_biaya }}</b></td>
+            <td>
+                <form method="post" action="{% url 'hapus_keranjang' item.item_id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button class="btn btn-danger" type="submit" id="hapus-{{ item.item_id }}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="total-row">
+        <span class="total-label">Total: Rp {{ total }}</span>
+        <a href="{% url 'checkout_penyewaan' %}" class="btn btn-gold" id="btn-checkout">
+            <i class="fas fa-credit-card"></i> Lanjut ke Pembayaran
+        </a>
+    </div>
+
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-shopping-cart"></i>
+        <p>Keranjang penyewaan masih kosong.</p>
+    </div>
+    {% endif %}
+
+    <div class="actions-row">
+        <a href="{% url 'sewa_mobil' %}" class="btn btn-primary" id="btn-tambah-mobil">
+            <i class="fas fa-plus"></i> Tambah Mobil
+        </a>
+        <a href="{% url 'landing' %}" class="btn" style="background:#e2e8f0;color:#475569;" id="btn-beranda">
+            <i class="fas fa-home"></i> Beranda
+        </a>
+    </div>
+</div>
+</body>
+</html>
